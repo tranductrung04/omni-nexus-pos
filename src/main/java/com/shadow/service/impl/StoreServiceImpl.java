@@ -38,6 +38,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public Store getStoreEntityById(Long id) throws StoreException {
+        return storeRepository.findById(id).orElseThrow(
+                () -> new StoreException("Store not found")
+        );
+    }
+
+    @Override
     public List<StoreDto> getAllStores() {
         List<Store> stores = storeRepository.findAll();
         return stores.stream().map(StoreMapper::toDto).collect(Collectors.toList());

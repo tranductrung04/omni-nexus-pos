@@ -14,6 +14,8 @@ public interface StoreService {
 
     StoreDto getStoreById(Long id) throws StoreException;
 
+    Store getStoreEntityById(Long id) throws StoreException;
+
     List<StoreDto> getAllStores();
 
     Store getStoreByAdmin() throws UserException;

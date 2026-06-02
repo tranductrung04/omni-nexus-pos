@@ -3,16 +3,19 @@ package com.shadow.service.impl;
 import com.shadow.exception.ProductException;
 import com.shadow.exception.StoreException;
 import com.shadow.mapper.ProductMapper;
+import com.shadow.model.Category;
 import com.shadow.model.Product;
 import com.shadow.model.Store;
 import com.shadow.model.User;
 import com.shadow.payload.dto.ProductDto;
+import com.shadow.repository.CategoryRepository;
 import com.shadow.repository.ProductRepository;
 import com.shadow.repository.StoreRepository;
 import com.shadow.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.xml.catalog.CatalogException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductDto createProduct(ProductDto productDto, User user) {
@@ -29,7 +33,11 @@ public class ProductServiceImpl implements ProductService {
                 () -> new StoreException("Store not found")
         );
 
-        Product product = ProductMapper.toEntity(productDto, store);
+        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
+                () -> new CatalogException("Category not found")
+        );
+
+        Product product = ProductMapper.toEntity(productDto, store, category);
 
         return ProductMapper.toDTO(productRepository.save(product));
     }
@@ -48,6 +56,13 @@ public class ProductServiceImpl implements ProductService {
         product.setSellingPrice(productDto.getSellingPrice());
         product.setBrand(productDto.getBrand());
         product.setUpdatedAt(LocalDateTime.now());
+
+        if (productDto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
+                    () -> new CatalogException("Category not found")
+            );
+            product.setCategory(category);
+        }
 
         return ProductMapper.toDTO(productRepository.save(product));
     }

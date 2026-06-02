@@ -28,7 +28,8 @@ public class Product {
     private String brand;
     private String imageUrl;
 
-//    private Category category;
+    @ManyToOne
+    private Category category;
 
     @ManyToOne
     private Store store;
