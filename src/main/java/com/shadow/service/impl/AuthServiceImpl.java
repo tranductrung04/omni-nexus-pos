@@ -26,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final CustomUserImplementation customUserImplementation;
+    private final UserMapper userMapper;
 
     @Override
     public AuthResponse signup(UserDto userDto) throws UserException {
@@ -59,7 +60,8 @@ public class AuthServiceImpl implements AuthService {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Registered successfully");
-        authResponse.setUser(UserMapper.toDTO(savedUser));
+        authResponse.setUser(userMapper.toDTO(savedUser));
+
         return authResponse;
     }
 
@@ -78,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Login successfully");
-        authResponse.setUser(UserMapper.toDTO(user));
+        authResponse.setUser(userMapper.toDTO(user));
 
         return authResponse;
     }

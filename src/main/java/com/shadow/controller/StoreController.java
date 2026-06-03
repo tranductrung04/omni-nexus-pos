@@ -3,11 +3,9 @@ package com.shadow.controller;
 import com.shadow.domain.StoreStatus;
 import com.shadow.exception.UserException;
 import com.shadow.model.Store;
-import com.shadow.model.User;
 import com.shadow.payload.dto.StoreDto;
 import com.shadow.payload.response.ApiResponse;
 import com.shadow.service.StoreService;
-import com.shadow.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +17,11 @@ import java.util.List;
 @RequestMapping("/api/stores")
 public class StoreController {
     private final StoreService storeService;
-    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<StoreDto> createStore(
-            @RequestBody StoreDto storeDto,
-            @RequestHeader("Authorization") String jwt) throws UserException {
-        User user = userService.getUserFromJwtToken(jwt);
-        return ResponseEntity.ok(storeService.createStore(storeDto, user));
+            @RequestBody StoreDto storeDto) throws UserException {
+        return ResponseEntity.ok(storeService.createStore(storeDto));
     }
 
     @GetMapping
@@ -53,10 +48,13 @@ public class StoreController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteStore(@PathVariable Long id) throws UserException {
+    public ResponseEntity<ApiResponse> deleteStore(
+            @PathVariable Long id) throws UserException {
         storeService.deleteStore(id);
+
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage("Store deleted successfully");
+
         return ResponseEntity.ok(apiResponse);
     }
 

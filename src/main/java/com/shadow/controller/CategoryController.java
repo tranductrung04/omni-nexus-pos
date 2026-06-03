@@ -19,8 +19,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
-            @RequestBody CategoryDTO categoryDTO)
-            throws CategoryException, UserException {
+            @RequestBody CategoryDTO categoryDTO) throws CategoryException, UserException {
         return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
     }
 
@@ -33,14 +32,13 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
-            @RequestBody CategoryDTO category
-    ) throws CategoryException, UserException {
+            @RequestBody CategoryDTO category) throws CategoryException, UserException {
         return ResponseEntity.ok(categoryService.updateCategory(id, category));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id)
-            throws CategoryException, UserException {
+    public ResponseEntity<ApiResponse> deleteCategory(
+            @PathVariable Long id) throws CategoryException, UserException {
         categoryService.deleteCategory(id);
 
         ApiResponse apiResponse = new ApiResponse();

@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final UserService userService;
     private final StoreService storeService;
+    private final UserService userService;
+    private final CategoryMapper categoryMapper;
 
     @Override
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws UserException, CategoryException {
-        User user = userService.getCurrentUser();
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryException, UserException {
+        User currentUser = userService.getCurrentUser();
 
         Store store = storeService.getStoreEntityById(categoryDTO.getStoreId());
 
@@ -36,56 +37,52 @@ public class CategoryServiceImpl implements CategoryService {
                 .store(store)
                 .build();
 
-        checkAuthority(user, store);
+        checkAuthority(currentUser, store);
 
         Category savedcategory = categoryRepository.save(category);
-        return CategoryMapper.toDTO(savedcategory);
+        return categoryMapper.toDTO(savedcategory);
     }
 
     @Override
     public List<CategoryDTO> getCategoriesByStore(Long storeId) {
         List<Category> categories = categoryRepository.findByStoreId(storeId);
-        return categories.stream().map(CategoryMapper::toDTO).collect(Collectors.toList());
+        return categories.stream().map(categoryMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) throws CategoryException, UserException {
-        User user = userService.getCurrentUser();
+        User currentUser = userService.getCurrentUser();
 
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new CategoryException("Category not found")
         );
 
-        checkAuthority(user, category.getStore());
+        checkAuthority(currentUser, category.getStore());
 
         category.setName(categoryDTO.getName());
         Category savedCategory = categoryRepository.save(category);
-        return CategoryMapper.toDTO(savedCategory);
+        return categoryMapper.toDTO(savedCategory);
     }
 
     @Override
-    public void deleteCategory(Long id) throws UserException, CategoryException {
-        User user = userService.getCurrentUser();
+    public void deleteCategory(Long id) throws CategoryException, UserException {
+        User currentUser = userService.getCurrentUser();
 
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new CategoryException("Category not found")
         );
 
-        checkAuthority(user, category.getStore());
+        checkAuthority(currentUser, category.getStore());
 
         categoryRepository.delete(category);
     }
 
     @Override
-    public Category getCategoryEntityById(Long id) throws UserException, CategoryException {
-        User user = userService.getCurrentUser();
-
+    public Category getCategoryEntityById(Long id) throws CategoryException {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new CategoryException("Category not found")
         );
 
-        checkAuthority(user, category.getStore());
-        
         return category;
     }
 

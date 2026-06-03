@@ -22,11 +22,21 @@ import java.util.stream.Collectors;
 public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final UserService userService;
+    private final StoreMapper storeMapper;
 
     @Override
-    public StoreDto createStore(StoreDto storeDto, User user) {
-        Store store = StoreMapper.toEntity(storeDto, user);
-        return StoreMapper.toDto(storeRepository.save(store));
+    public StoreDto createStore(StoreDto storeDto) throws UserException {
+        User currentUser = userService.getCurrentUser();
+
+        Store existingStore = storeRepository.findByStoreAdminId(currentUser.getId());
+        if (existingStore != null) {
+            throw new StoreException("This admin already owns a store. Cannot create more");
+        }
+
+        Store store = storeMapper.toEntity(storeDto);
+        store.setStoreAdmin(currentUser);
+
+        return storeMapper.toDTO(storeRepository.save(store));
     }
 
     @Override
@@ -34,7 +44,7 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(id).orElseThrow(
                 () -> new StoreException("Store not found")
         );
-        return StoreMapper.toDto(store);
+        return storeMapper.toDTO(store);
     }
 
     @Override
@@ -47,22 +57,20 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreDto> getAllStores() {
         List<Store> stores = storeRepository.findAll();
-        return stores.stream().map(StoreMapper::toDto).collect(Collectors.toList());
+        return stores.stream().map(storeMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public Store getStoreByAdmin() throws UserException {
-        User admin = userService.getCurrentUser();
-        return storeRepository.findByStoreAdminId(admin.getId());
+        User currentUser = userService.getCurrentUser();
+        return storeRepository.findByStoreAdminId(currentUser.getId());
     }
 
     @Override
-    public StoreDto updateStore(Long id, StoreDto storeDto) throws StoreException, UserException {
-        User currentUser = userService.getCurrentUser();
-        Store existing = storeRepository.findByStoreAdminId(currentUser.getId());
-        if (existing == null) {
-            throw new StoreException("Store not found");
-        }
+    public StoreDto updateStore(Long id, StoreDto storeDto) throws StoreException {
+        Store existing = storeRepository.findById(id).orElseThrow(
+                () -> new StoreException("Store not found")
+        );
 
         existing.setBrand(storeDto.getBrand());
         existing.setDescription(storeDto.getDescription());
@@ -79,7 +87,7 @@ public class StoreServiceImpl implements StoreService {
                     .build();
             existing.setContact(contact);
         }
-        return StoreMapper.toDto(storeRepository.save(existing));
+        return storeMapper.toDTO(storeRepository.save(existing));
     }
 
     @Override
@@ -91,10 +99,12 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreDto getStoreByEmployee() throws UserException {
         User currentUser = userService.getCurrentUser();
+
         if (currentUser == null) {
             throw new UserException("You don't have permission to access this store");
         }
-        return StoreMapper.toDto(currentUser.getStore());
+
+        return storeMapper.toDTO(currentUser.getStore());
     }
 
     @Override
@@ -103,6 +113,6 @@ public class StoreServiceImpl implements StoreService {
                 () -> new StoreException("Store not found")
         );
         store.setStatus(status);
-        return StoreMapper.toDto(storeRepository.save(store));
+        return storeMapper.toDTO(storeRepository.save(store));
     }
 }

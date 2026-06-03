@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class StoreDto {
     private Long id;
     private String brand;
-    private UserDto storeAdmin;
+    private Long storeAdminId;
     private String description;
     private String storeType;
     private StoreStatus status;

@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,7 +26,7 @@ public class JwtValidator extends OncePerRequestFilter {
     private final SecretKey key;
     private final String jwtHeader;
 
-    public JwtValidator(JwtProperties jwtProperties) {
+    public JwtValidator(JwtProperties jwtProperties, UserDetailsService userDetailsService) {
         this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
         this.jwtHeader = jwtProperties.getHeader();
     }
@@ -35,6 +36,7 @@ public class JwtValidator extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(jwtHeader);
+
         if (jwt != null) {
             jwt = jwt.substring(7);
             try {
@@ -43,17 +45,17 @@ public class JwtValidator extends OncePerRequestFilter {
                         .build()
                         .parseSignedClaims(jwt)
                         .getPayload();
+
                 String email = String.valueOf(claims.get("email"));
                 String authorities = String.valueOf(claims.get("authorities"));
                 List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(
                         authorities
                 );
+
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         email, null, auths
                 );
-                SecurityContextHolder.getContext().setAuthentication(
-                        auth
-                );
+                SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
                 throw new BadCredentialsException("Invalid JWT...");
             }

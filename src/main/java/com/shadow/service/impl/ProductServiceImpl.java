@@ -7,7 +7,6 @@ import com.shadow.mapper.ProductMapper;
 import com.shadow.model.Category;
 import com.shadow.model.Product;
 import com.shadow.model.Store;
-import com.shadow.model.User;
 import com.shadow.payload.dto.ProductDto;
 import com.shadow.repository.ProductRepository;
 import com.shadow.service.CategoryService;
@@ -27,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto, User user) throws CategoryException, UserException {
+    public ProductDto createProduct(ProductDto productDto) throws CategoryException, UserException {
         Store store = storeService.getStoreEntityById(productDto.getStoreId());
 
         Category category = categoryService.getCategoryEntityById(productDto.getCategoryId());
@@ -40,7 +39,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(Long id, ProductDto productDto, User user) throws ProductException, CategoryException, UserException {
+    public ProductDto updateProduct(
+            Long id, ProductDto productDto
+    ) throws ProductException, CategoryException, UserException {
+
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ProductException("Product not found")
         );
@@ -62,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long id, User user) throws ProductException {
+    public void deleteProduct(Long id) throws ProductException {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ProductException("Product not found")
         );
