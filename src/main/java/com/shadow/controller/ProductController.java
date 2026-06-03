@@ -1,32 +1,29 @@
 package com.shadow.controller;
 
+import com.shadow.exception.CategoryException;
 import com.shadow.exception.ProductException;
 import com.shadow.exception.UserException;
 import com.shadow.model.User;
 import com.shadow.payload.dto.ProductDto;
 import com.shadow.payload.response.ApiResponse;
 import com.shadow.service.ProductService;
-import com.shadow.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
-    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(
             @RequestBody ProductDto productDto,
-            @RequestHeader("Authorization") String jwt) throws UserException {
-        User user = userService.getUserFromJwtToken(jwt);
-
+            @AuthenticationPrincipal User user) throws CategoryException, UserException {
         return ResponseEntity.ok(productService.createProduct(productDto, user));
     }
 
@@ -40,9 +37,7 @@ public class ProductController {
     public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id,
             @RequestBody ProductDto productDto,
-            @RequestHeader("Authorization") String jwt) throws ProductException, UserException {
-        User user = userService.getUserFromJwtToken(jwt);
-
+            @AuthenticationPrincipal User user) throws ProductException, CategoryException, UserException {
         return ResponseEntity.ok(productService.updateProduct(id, productDto, user));
     }
 
@@ -56,9 +51,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(
             @PathVariable Long id,
-            @RequestHeader("Authorization") String jwt) throws ProductException, UserException {
-        User user = userService.getUserFromJwtToken(jwt);
-
+            @AuthenticationPrincipal User user) throws ProductException {
         productService.deleteProduct(id, user);
 
         ApiResponse apiResponse = new ApiResponse();

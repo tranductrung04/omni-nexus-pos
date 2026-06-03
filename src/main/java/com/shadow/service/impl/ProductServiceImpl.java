@@ -1,49 +1,46 @@
 package com.shadow.service.impl;
 
+import com.shadow.exception.CategoryException;
 import com.shadow.exception.ProductException;
-import com.shadow.exception.StoreException;
+import com.shadow.exception.UserException;
 import com.shadow.mapper.ProductMapper;
 import com.shadow.model.Category;
 import com.shadow.model.Product;
 import com.shadow.model.Store;
 import com.shadow.model.User;
 import com.shadow.payload.dto.ProductDto;
-import com.shadow.repository.CategoryRepository;
 import com.shadow.repository.ProductRepository;
-import com.shadow.repository.StoreRepository;
+import com.shadow.service.CategoryService;
 import com.shadow.service.ProductService;
+import com.shadow.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.xml.catalog.CatalogException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final StoreRepository storeRepository;
-    private final CategoryRepository categoryRepository;
+    private final StoreService storeService;
+    private final CategoryService categoryService;
+    private final ProductMapper productMapper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto, User user) {
-        Store store = storeRepository.findById(productDto.getStoreId()).orElseThrow(
-                () -> new StoreException("Store not found")
-        );
+    public ProductDto createProduct(ProductDto productDto, User user) throws CategoryException, UserException {
+        Store store = storeService.getStoreEntityById(productDto.getStoreId());
 
-        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
-                () -> new CatalogException("Category not found")
-        );
+        Category category = categoryService.getCategoryEntityById(productDto.getCategoryId());
 
-        Product product = ProductMapper.toEntity(productDto, store, category);
+        Product product = productMapper.toEntity(productDto);
+        product.setStore(store);
+        product.setCategory(category);
 
-        return ProductMapper.toDTO(productRepository.save(product));
+        return productMapper.toDTO(productRepository.save(product));
     }
 
     @Override
-    public ProductDto updateProduct(Long id, ProductDto productDto, User user) throws ProductException {
+    public ProductDto updateProduct(Long id, ProductDto productDto, User user) throws ProductException, CategoryException, UserException {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ProductException("Product not found")
         );
@@ -51,20 +48,17 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setSku(productDto.getSku());
-        product.setImageUrl(product.getImageUrl());
-        product.setMrp(product.getMrp());
+        product.setImageUrl(productDto.getImageUrl());
+        product.setMrp(productDto.getMrp());
         product.setSellingPrice(productDto.getSellingPrice());
         product.setBrand(productDto.getBrand());
-        product.setUpdatedAt(LocalDateTime.now());
 
         if (productDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
-                    () -> new CatalogException("Category not found")
-            );
+            Category category = categoryService.getCategoryEntityById(productDto.getCategoryId());
             product.setCategory(category);
         }
 
-        return ProductMapper.toDTO(productRepository.save(product));
+        return productMapper.toDTO(productRepository.save(product));
     }
 
     @Override
@@ -79,12 +73,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProductByStoreId(Long storeId) {
         List<Product> products = productRepository.findByStoreId(storeId);
-        return products.stream().map(ProductMapper::toDTO).collect(Collectors.toList());
+        return products.stream().map(productMapper::toDTO).toList();
     }
 
     @Override
     public List<ProductDto> searchByKeyword(Long storeId, String keyword) {
         List<Product> products = productRepository.searchByKeyword(storeId, keyword);
-        return products.stream().map(ProductMapper::toDTO).collect(Collectors.toList());
+        return products.stream().map(productMapper::toDTO).toList();
     }
 }

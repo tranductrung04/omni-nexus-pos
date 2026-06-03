@@ -76,6 +76,19 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(category);
     }
 
+    @Override
+    public Category getCategoryEntityById(Long id) throws UserException, CategoryException {
+        User user = userService.getCurrentUser();
+
+        Category category = categoryRepository.findById(id).orElseThrow(
+                () -> new CategoryException("Category not found")
+        );
+
+        checkAuthority(user, category.getStore());
+        
+        return category;
+    }
+
     public void checkAuthority(User user, Store store) throws CategoryException {
         boolean isAdmin = user.getRole().equals(UserRole.ROLE_STORE_ADMIN);
         boolean isManager = user.getRole().equals(UserRole.ROLE_STORE_MANAGER);

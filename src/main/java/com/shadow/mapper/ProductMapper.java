@@ -1,39 +1,15 @@
 package com.shadow.mapper;
 
-import com.shadow.model.Category;
 import com.shadow.model.Product;
-import com.shadow.model.Store;
 import com.shadow.payload.dto.ProductDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-public class ProductMapper {
-    public static ProductDto toDTO(Product product) {
-        return ProductDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .sku(product.getSku())
-                .description(product.getDescription())
-                .mrp(product.getMrp())
-                .sellingPrice(product.getSellingPrice())
-                .brand(product.getBrand())
-                .storeId(product.getStore() != null ? product.getStore().getId() : null)
-                .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
-                .imageUrl(product.getImageUrl())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
+    @Mapping(source = "store.id", target = "storeId")
+    @Mapping(source = "category.id", target = "categoryId")
+    ProductDto toDTO(Product product);
 
-    public static Product toEntity(ProductDto productDto, Store store, Category category) {
-        return Product.builder()
-                .name(productDto.getName())
-                .store(store)
-                .category(category)
-                .sku(productDto.getSku())
-                .description(productDto.getDescription())
-                .mrp(productDto.getMrp())
-                .sellingPrice(productDto.getSellingPrice())
-                .brand(productDto.getBrand())
-                .imageUrl(productDto.getImageUrl())
-                .build();
-    }
+    Product toEntity(ProductDto productDto);
 }
