@@ -34,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
         if (user != null) {
             throw new UserException("email is already registered!");
         }
+
         if (userDto.getRole().equals(UserRole.ROLE_ADMIN)) {
             throw new UserException("role admin is not allowed!");
         }
@@ -53,8 +54,8 @@ public class AuthServiceImpl implements AuthService {
                 userDto.getEmail(), userDto.getPassword()
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = jwtProvider.generateToken(authentication);
+
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Registered successfully");

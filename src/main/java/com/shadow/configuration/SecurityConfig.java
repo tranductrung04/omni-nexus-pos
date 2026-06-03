@@ -1,6 +1,7 @@
 package com.shadow.configuration;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtValidator jwtValidator;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
@@ -30,7 +33,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/super-admin/**")
                                 .hasRole("ADMIN")
                                 .anyRequest().permitAll()
-                ).addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
+                ).addFilterBefore(jwtValidator, BasicAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(
                         cors -> cors.configurationSource(corsConfigurationSource())
