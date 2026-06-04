@@ -10,5 +10,8 @@ public interface StoreMapper {
     @Mapping(source = "storeAdmin.id", target = "storeAdminId")
     StoreDTO toDTO(Store store);
 
+    @Mapping(target = "storeAdmin", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Store toEntity(StoreDTO storeDto);
 }

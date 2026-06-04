@@ -1,18 +1,15 @@
 package com.shadow.service;
 
-import com.shadow.exception.CategoryException;
-import com.shadow.exception.ProductException;
-import com.shadow.exception.UserException;
 import com.shadow.payload.dto.ProductDTO;
 
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO createProduct(ProductDTO productDto) throws CategoryException, UserException;
+    ProductDTO createProduct(ProductDTO productDto);
 
-    ProductDTO updateProduct(Long id, ProductDTO productDto) throws ProductException, CategoryException, UserException;
+    ProductDTO updateProduct(Long id, ProductDTO productDto);
 
-    void deleteProduct(Long id) throws ProductException;
+    void deleteProduct(Long id);
 
     List<ProductDTO> getAllProductByStoreId(Long storeId);
 

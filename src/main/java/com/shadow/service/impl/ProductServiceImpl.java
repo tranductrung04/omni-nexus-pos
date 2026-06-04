@@ -1,8 +1,6 @@
 package com.shadow.service.impl;
 
-import com.shadow.exception.CategoryException;
-import com.shadow.exception.ProductException;
-import com.shadow.exception.UserException;
+import com.shadow.exception.ResourceNotFoundException;
 import com.shadow.mapper.ProductMapper;
 import com.shadow.model.Category;
 import com.shadow.model.Product;
@@ -26,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public ProductDTO createProduct(ProductDTO productDto) throws CategoryException, UserException {
+    public ProductDTO createProduct(ProductDTO productDto) {
         Store store = storeService.getStoreEntityById(productDto.getStoreId());
 
         Category category = categoryService.getCategoryEntityById(productDto.getCategoryId());
@@ -39,12 +37,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(
-            Long id, ProductDTO productDto
-    ) throws ProductException, CategoryException, UserException {
+    public ProductDTO updateProduct(Long id, ProductDTO productDto) {
 
         Product product = productRepository.findById(id).orElseThrow(
-                () -> new ProductException("Product not found")
+                () -> new ResourceNotFoundException("Product", id)
         );
 
         product.setName(productDto.getName());
@@ -64,9 +60,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long id) throws ProductException {
+    public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(
-                () -> new ProductException("Product not found")
+                () -> new ResourceNotFoundException("Product", id)
         );
 
         productRepository.delete(product);

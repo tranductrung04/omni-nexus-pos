@@ -1,18 +1,17 @@
 package com.shadow.service;
 
-import com.shadow.exception.UserException;
 import com.shadow.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    User getUserFromJwtToken(String token) throws UserException;
+    User getUserFromJwtToken(String token);
 
-    User getCurrentUser() throws UserException;
+    User getCurrentUser();
 
-    User getUserByEmail(String email) throws UserException;
+    User getUserByEmail(String email);
 
-    User getUserById(Long id) throws UserException;
+    User getUserById(Long id);
 
     List<User> getAllUsers();
 }

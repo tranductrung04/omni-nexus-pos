@@ -1,6 +1,5 @@
 package com.shadow.controller;
 
-import com.shadow.exception.UserException;
 import com.shadow.mapper.UserMapper;
 import com.shadow.model.User;
 import com.shadow.payload.dto.UserDTO;
@@ -18,15 +17,14 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> getUserProfile(
-            @RequestHeader("Authorization") String jwt
-    ) throws UserException {
+            @RequestHeader("Authorization") String jwt) {
         User user = userService.getUserFromJwtToken(jwt);
         return ResponseEntity.ok(userMapper.toDTO(user));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(
-            @PathVariable("id") Long id) throws UserException {
+            @PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(userMapper.toDTO(user));
     }

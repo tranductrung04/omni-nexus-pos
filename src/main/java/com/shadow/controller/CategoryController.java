@@ -1,7 +1,5 @@
 package com.shadow.controller;
 
-import com.shadow.exception.CategoryException;
-import com.shadow.exception.UserException;
 import com.shadow.payload.dto.CategoryDTO;
 import com.shadow.payload.response.ApiResponse;
 import com.shadow.service.CategoryService;
@@ -19,7 +17,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(
-            @RequestBody CategoryDTO categoryDTO) throws CategoryException, UserException {
+            @RequestBody CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
     }
 
@@ -32,13 +30,13 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
-            @RequestBody CategoryDTO category) throws CategoryException, UserException {
+            @RequestBody CategoryDTO category) {
         return ResponseEntity.ok(categoryService.updateCategory(id, category));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCategory(
-            @PathVariable Long id) throws CategoryException, UserException {
+            @PathVariable Long id) {
         categoryService.deleteCategory(id);
 
         ApiResponse apiResponse = new ApiResponse();

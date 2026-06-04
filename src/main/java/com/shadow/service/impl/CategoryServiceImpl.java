@@ -1,8 +1,8 @@
 package com.shadow.service.impl;
 
 import com.shadow.domain.UserRole;
-import com.shadow.exception.CategoryException;
-import com.shadow.exception.UserException;
+import com.shadow.exception.ForbiddenException;
+import com.shadow.exception.ResourceNotFoundException;
 import com.shadow.mapper.CategoryMapper;
 import com.shadow.model.Category;
 import com.shadow.model.Store;
@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryException, UserException {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         User currentUser = userService.getCurrentUser();
 
         Store store = storeService.getStoreEntityById(categoryDTO.getStoreId());
@@ -50,11 +50,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) throws CategoryException, UserException {
+    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         User currentUser = userService.getCurrentUser();
 
         Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new CategoryException("Category not found")
+                () -> new ResourceNotFoundException("Category", id)
         );
 
         checkAuthority(currentUser, category.getStore());
@@ -65,11 +65,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long id) throws CategoryException, UserException {
+    public void deleteCategory(Long id) {
         User currentUser = userService.getCurrentUser();
 
         Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new CategoryException("Category not found")
+                () -> new ResourceNotFoundException("Category", id)
         );
 
         checkAuthority(currentUser, category.getStore());
@@ -78,21 +78,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryEntityById(Long id) throws CategoryException {
+    public Category getCategoryEntityById(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new CategoryException("Category not found")
+                () -> new ResourceNotFoundException("Category", id)
         );
 
         return category;
     }
 
-    public void checkAuthority(User user, Store store) throws CategoryException {
+    public void checkAuthority(User user, Store store) {
         boolean isAdmin = user.getRole().equals(UserRole.ROLE_STORE_ADMIN);
         boolean isManager = user.getRole().equals(UserRole.ROLE_STORE_MANAGER);
         boolean isSameStore = user.equals(store.getStoreAdmin());
 
         if (!(isAdmin && isSameStore) && !isManager) {
-            throw new CategoryException("You don't have permission to manage this category");
+            throw new ForbiddenException("You don't have permission to manage this category");
         }
     }
 }

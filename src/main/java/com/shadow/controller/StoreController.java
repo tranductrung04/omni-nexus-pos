@@ -1,7 +1,6 @@
 package com.shadow.controller;
 
 import com.shadow.domain.StoreStatus;
-import com.shadow.exception.UserException;
 import com.shadow.model.Store;
 import com.shadow.payload.dto.StoreDTO;
 import com.shadow.payload.response.ApiResponse;
@@ -20,7 +19,7 @@ public class StoreController {
 
     @PostMapping
     public ResponseEntity<StoreDTO> createStore(
-            @RequestBody StoreDTO storeDto) throws UserException {
+            @RequestBody StoreDTO storeDto) {
         return ResponseEntity.ok(storeService.createStore(storeDto));
     }
 
@@ -37,7 +36,7 @@ public class StoreController {
     @PutMapping("/{id}")
     public ResponseEntity<StoreDTO> updateStore(
             @PathVariable Long id,
-            @RequestBody StoreDTO storeDto) throws UserException {
+            @RequestBody StoreDTO storeDto) {
         return ResponseEntity.ok(storeService.updateStore(id, storeDto));
     }
 
@@ -49,7 +48,7 @@ public class StoreController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteStore(
-            @PathVariable Long id) throws UserException {
+            @PathVariable Long id) {
         storeService.deleteStore(id);
 
         ApiResponse apiResponse = new ApiResponse();
@@ -59,12 +58,12 @@ public class StoreController {
     }
 
     @GetMapping("/admin")
-    public ResponseEntity<Store> getStoreByAdmin() throws UserException {
+    public ResponseEntity<Store> getStoreByAdmin() {
         return ResponseEntity.ok(storeService.getStoreByAdmin());
     }
 
     @GetMapping("/employee")
-    public ResponseEntity<StoreDTO> getStoreByEmployee() throws UserException {
+    public ResponseEntity<StoreDTO> getStoreByEmployee() {
         return ResponseEntity.ok(storeService.getStoreByEmployee());
     }
 

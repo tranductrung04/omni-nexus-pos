@@ -1,8 +1,9 @@
 package com.shadow.service.impl;
 
 import com.shadow.domain.StoreStatus;
-import com.shadow.exception.StoreException;
-import com.shadow.exception.UserException;
+import com.shadow.exception.DuplicateResourceException;
+import com.shadow.exception.ForbiddenException;
+import com.shadow.exception.ResourceNotFoundException;
 import com.shadow.mapper.StoreMapper;
 import com.shadow.model.Store;
 import com.shadow.model.StoreContact;
@@ -25,12 +26,12 @@ public class StoreServiceImpl implements StoreService {
     private final StoreMapper storeMapper;
 
     @Override
-    public StoreDTO createStore(StoreDTO storeDto) throws UserException {
+    public StoreDTO createStore(StoreDTO storeDto) {
         User currentUser = userService.getCurrentUser();
 
         Store existingStore = storeRepository.findByStoreAdminId(currentUser.getId());
         if (existingStore != null) {
-            throw new StoreException("This admin already owns a store. Cannot create more");
+            throw new DuplicateResourceException("This admin already owns a store. Cannot create more");
         }
 
         Store store = storeMapper.toEntity(storeDto);
@@ -40,17 +41,17 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDTO getStoreById(Long id) throws StoreException {
+    public StoreDTO getStoreById(Long id) {
         Store store = storeRepository.findById(id).orElseThrow(
-                () -> new StoreException("Store not found")
+                () -> new ResourceNotFoundException("Store", id)
         );
         return storeMapper.toDTO(store);
     }
 
     @Override
-    public Store getStoreEntityById(Long id) throws StoreException {
+    public Store getStoreEntityById(Long id) {
         return storeRepository.findById(id).orElseThrow(
-                () -> new StoreException("Store not found")
+                () -> new ResourceNotFoundException("Store", id)
         );
     }
 
@@ -61,15 +62,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public Store getStoreByAdmin() throws UserException {
+    public Store getStoreByAdmin() {
         User currentUser = userService.getCurrentUser();
         return storeRepository.findByStoreAdminId(currentUser.getId());
     }
 
     @Override
-    public StoreDTO updateStore(Long id, StoreDTO storeDto) throws StoreException {
+    public StoreDTO updateStore(Long id, StoreDTO storeDto) {
         Store existing = storeRepository.findById(id).orElseThrow(
-                () -> new StoreException("Store not found")
+                () -> new ResourceNotFoundException("Store", id)
         );
 
         existing.setBrand(storeDto.getBrand());
@@ -91,17 +92,17 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteStore(Long id) throws UserException {
+    public void deleteStore(Long id) {
         Store store = getStoreByAdmin();
         storeRepository.delete(store);
     }
 
     @Override
-    public StoreDTO getStoreByEmployee() throws UserException {
+    public StoreDTO getStoreByEmployee() {
         User currentUser = userService.getCurrentUser();
 
         if (currentUser == null) {
-            throw new UserException("You don't have permission to access this store");
+            throw new ForbiddenException("You don't have permission to access this store");
         }
 
         return storeMapper.toDTO(currentUser.getStore());
@@ -110,7 +111,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreDTO moderateStore(Long id, StoreStatus status) {
         Store store = storeRepository.findById(id).orElseThrow(
-                () -> new StoreException("Store not found")
+                () -> new ResourceNotFoundException("Store", id)
         );
         store.setStatus(status);
         return storeMapper.toDTO(storeRepository.save(store));

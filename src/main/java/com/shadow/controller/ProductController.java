@@ -1,8 +1,5 @@
 package com.shadow.controller;
 
-import com.shadow.exception.CategoryException;
-import com.shadow.exception.ProductException;
-import com.shadow.exception.UserException;
 import com.shadow.payload.dto.ProductDTO;
 import com.shadow.payload.response.ApiResponse;
 import com.shadow.service.ProductService;
@@ -20,7 +17,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(
-            @RequestBody ProductDTO productDto) throws CategoryException, UserException {
+            @RequestBody ProductDTO productDto) {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
@@ -33,7 +30,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductDTO productDto) throws ProductException, CategoryException, UserException {
+            @RequestBody ProductDTO productDto) {
         return ResponseEntity.ok(productService.updateProduct(id, productDto));
     }
 
@@ -46,7 +43,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(
-            @PathVariable Long id) throws ProductException {
+            @PathVariable Long id) {
         productService.deleteProduct(id);
 
         ApiResponse apiResponse = new ApiResponse();

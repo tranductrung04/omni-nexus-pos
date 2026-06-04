@@ -2,7 +2,9 @@ package com.shadow.service.impl;
 
 import com.shadow.configuration.JwtProvider;
 import com.shadow.domain.UserRole;
-import com.shadow.exception.UserException;
+import com.shadow.exception.BadCredentialsException;
+import com.shadow.exception.DuplicateResourceException;
+import com.shadow.exception.ForbiddenException;
 import com.shadow.mapper.UserMapper;
 import com.shadow.model.User;
 import com.shadow.payload.dto.UserDTO;
@@ -29,15 +31,15 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
 
     @Override
-    public AuthResponse signup(UserDTO userDto) throws UserException {
+    public AuthResponse signup(UserDTO userDto) {
         User user = userRepository.findByEmail(userDto.getEmail());
 
         if (user != null) {
-            throw new UserException("email is already registered!");
+            throw new DuplicateResourceException("email is already registered!");
         }
 
         if (userDto.getRole().equals(UserRole.ROLE_ADMIN)) {
-            throw new UserException("role admin is not allowed!");
+            throw new ForbiddenException("role admin is not allowed!");
         }
 
         User newUser = new User();
@@ -66,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(UserDTO userDto) throws UserException {
+    public AuthResponse login(UserDTO userDto) {
         String email = userDto.getEmail();
         String password = userDto.getPassword();
         Authentication authentication = authenticate(email, password);
@@ -85,13 +87,13 @@ public class AuthServiceImpl implements AuthService {
         return authResponse;
     }
 
-    private Authentication authenticate(String email, String password) throws UserException {
+    private Authentication authenticate(String email, String password) {
         UserDetails userDetails = customUserImplementation.loadUserByUsername(email);
         if (userDetails == null) {
-            throw new UserException("email doesn't exit" + email);
+            throw new BadCredentialsException("email doesn't exit" + email);
         }
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new UserException("password doesn't match");
+            throw new BadCredentialsException("password doesn't match");
         }
         return new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
