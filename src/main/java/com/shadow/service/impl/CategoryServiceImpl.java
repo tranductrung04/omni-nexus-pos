@@ -32,10 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         Store store = storeService.getStoreEntityById(categoryDTO.getStoreId());
 
-        Category category = Category.builder()
-                .name(categoryDTO.getName())
-                .store(store)
-                .build();
+        Category category = categoryMapper.toEntity(categoryDTO);
+        category.setStore(store);
 
         checkAuthority(currentUser, store);
 
