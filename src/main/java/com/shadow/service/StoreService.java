@@ -4,26 +4,26 @@ import com.shadow.domain.StoreStatus;
 import com.shadow.exception.StoreException;
 import com.shadow.exception.UserException;
 import com.shadow.model.Store;
-import com.shadow.payload.dto.StoreDto;
+import com.shadow.payload.dto.StoreDTO;
 
 import java.util.List;
 
 public interface StoreService {
-    StoreDto createStore(StoreDto storeDto) throws UserException;
+    StoreDTO createStore(StoreDTO storeDto) throws UserException;
 
-    StoreDto getStoreById(Long id) throws StoreException;
+    StoreDTO getStoreById(Long id) throws StoreException;
 
     Store getStoreEntityById(Long id) throws StoreException;
 
-    List<StoreDto> getAllStores();
+    List<StoreDTO> getAllStores();
 
     Store getStoreByAdmin() throws UserException;
 
-    StoreDto updateStore(Long id, StoreDto storeDto) throws StoreException, UserException;
+    StoreDTO updateStore(Long id, StoreDTO storeDto) throws StoreException, UserException;
 
     void deleteStore(Long id) throws UserException;
 
-    StoreDto getStoreByEmployee() throws UserException;
+    StoreDTO getStoreByEmployee() throws UserException;
 
-    StoreDto moderateStore(Long id, StoreStatus status);
+    StoreDTO moderateStore(Long id, StoreStatus status);
 }

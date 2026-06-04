@@ -5,7 +5,7 @@ import com.shadow.domain.UserRole;
 import com.shadow.exception.UserException;
 import com.shadow.mapper.UserMapper;
 import com.shadow.model.User;
-import com.shadow.payload.dto.UserDto;
+import com.shadow.payload.dto.UserDTO;
 import com.shadow.payload.response.AuthResponse;
 import com.shadow.repository.UserRepository;
 import com.shadow.service.AuthService;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
 
     @Override
-    public AuthResponse signup(UserDto userDto) throws UserException {
+    public AuthResponse signup(UserDTO userDto) throws UserException {
         User user = userRepository.findByEmail(userDto.getEmail());
 
         if (user != null) {
@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(UserDto userDto) throws UserException {
+    public AuthResponse login(UserDTO userDto) throws UserException {
         String email = userDto.getEmail();
         String password = userDto.getPassword();
         Authentication authentication = authenticate(email, password);

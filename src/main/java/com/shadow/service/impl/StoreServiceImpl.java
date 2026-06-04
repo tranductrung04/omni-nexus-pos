@@ -7,7 +7,7 @@ import com.shadow.mapper.StoreMapper;
 import com.shadow.model.Store;
 import com.shadow.model.StoreContact;
 import com.shadow.model.User;
-import com.shadow.payload.dto.StoreDto;
+import com.shadow.payload.dto.StoreDTO;
 import com.shadow.repository.StoreRepository;
 import com.shadow.service.StoreService;
 import com.shadow.service.UserService;
@@ -25,7 +25,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreMapper storeMapper;
 
     @Override
-    public StoreDto createStore(StoreDto storeDto) throws UserException {
+    public StoreDTO createStore(StoreDTO storeDto) throws UserException {
         User currentUser = userService.getCurrentUser();
 
         Store existingStore = storeRepository.findByStoreAdminId(currentUser.getId());
@@ -40,7 +40,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto getStoreById(Long id) throws StoreException {
+    public StoreDTO getStoreById(Long id) throws StoreException {
         Store store = storeRepository.findById(id).orElseThrow(
                 () -> new StoreException("Store not found")
         );
@@ -55,7 +55,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreDto> getAllStores() {
+    public List<StoreDTO> getAllStores() {
         List<Store> stores = storeRepository.findAll();
         return stores.stream().map(storeMapper::toDTO).collect(Collectors.toList());
     }
@@ -67,7 +67,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto updateStore(Long id, StoreDto storeDto) throws StoreException {
+    public StoreDTO updateStore(Long id, StoreDTO storeDto) throws StoreException {
         Store existing = storeRepository.findById(id).orElseThrow(
                 () -> new StoreException("Store not found")
         );
@@ -97,7 +97,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto getStoreByEmployee() throws UserException {
+    public StoreDTO getStoreByEmployee() throws UserException {
         User currentUser = userService.getCurrentUser();
 
         if (currentUser == null) {
@@ -108,7 +108,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto moderateStore(Long id, StoreStatus status) {
+    public StoreDTO moderateStore(Long id, StoreStatus status) {
         Store store = storeRepository.findById(id).orElseThrow(
                 () -> new StoreException("Store not found")
         );

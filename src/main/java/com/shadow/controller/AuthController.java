@@ -1,7 +1,7 @@
 package com.shadow.controller;
 
 import com.shadow.exception.UserException;
-import com.shadow.payload.dto.UserDto;
+import com.shadow.payload.dto.UserDTO;
 import com.shadow.payload.response.AuthResponse;
 import com.shadow.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signupHandler(@RequestBody UserDto userDto) throws UserException {
+    public ResponseEntity<AuthResponse> signupHandler(@RequestBody UserDTO userDto) throws UserException {
         return ResponseEntity.ok(
                 authService.signup(userDto)
         );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginHandler(@RequestBody UserDto userDto) throws UserException {
+    public ResponseEntity<AuthResponse> loginHandler(@RequestBody UserDTO userDto) throws UserException {
         return ResponseEntity.ok(
                 authService.login(userDto)
         );

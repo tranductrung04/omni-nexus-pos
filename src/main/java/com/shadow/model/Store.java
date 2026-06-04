@@ -1,22 +1,19 @@
 package com.shadow.model;
 
 import com.shadow.domain.StoreStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class Store {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Store extends BaseEntity {
     @Column(nullable = false)
     private String brand;
 
@@ -31,17 +28,9 @@ public class Store {
     @Embedded
     private StoreContact contact = new StoreContact();
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreated() {
-        createdAt = LocalDateTime.now();
+    @Override
+    protected void onCreate() {
+        super.onCreate();
         status = StoreStatus.PENDING;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

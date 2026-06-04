@@ -1,7 +1,7 @@
 package com.shadow.mapper;
 
 import com.shadow.model.Product;
-import com.shadow.payload.dto.ProductDto;
+import com.shadow.payload.dto.ProductDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface ProductMapper {
     @Mapping(source = "store.id", target = "storeId")
     @Mapping(source = "category.id", target = "categoryId")
-    ProductDto toDTO(Product product);
+    ProductDTO toDTO(Product product);
 
-    Product toEntity(ProductDto productDto);
+    Product toEntity(ProductDTO productDto);
 }

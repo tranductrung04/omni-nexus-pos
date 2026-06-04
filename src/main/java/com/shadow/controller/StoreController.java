@@ -3,7 +3,7 @@ package com.shadow.controller;
 import com.shadow.domain.StoreStatus;
 import com.shadow.exception.UserException;
 import com.shadow.model.Store;
-import com.shadow.payload.dto.StoreDto;
+import com.shadow.payload.dto.StoreDTO;
 import com.shadow.payload.response.ApiResponse;
 import com.shadow.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -19,30 +19,30 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ResponseEntity<StoreDto> createStore(
-            @RequestBody StoreDto storeDto) throws UserException {
+    public ResponseEntity<StoreDTO> createStore(
+            @RequestBody StoreDTO storeDto) throws UserException {
         return ResponseEntity.ok(storeService.createStore(storeDto));
     }
 
     @GetMapping
-    public ResponseEntity<List<StoreDto>> getAllStore() {
+    public ResponseEntity<List<StoreDTO>> getAllStore() {
         return ResponseEntity.ok(storeService.getAllStores());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoreDto> getStoreById(@PathVariable Long id) {
+    public ResponseEntity<StoreDTO> getStoreById(@PathVariable Long id) {
         return ResponseEntity.ok(storeService.getStoreById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StoreDto> updateStore(
+    public ResponseEntity<StoreDTO> updateStore(
             @PathVariable Long id,
-            @RequestBody StoreDto storeDto) throws UserException {
+            @RequestBody StoreDTO storeDto) throws UserException {
         return ResponseEntity.ok(storeService.updateStore(id, storeDto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<StoreDto> moderateStore(
+    public ResponseEntity<StoreDTO> moderateStore(
             @PathVariable Long id, @RequestParam StoreStatus status) {
         return ResponseEntity.ok(storeService.moderateStore(id, status));
     }
@@ -64,7 +64,7 @@ public class StoreController {
     }
 
     @GetMapping("/employee")
-    public ResponseEntity<StoreDto> getStoreByEmployee() throws UserException {
+    public ResponseEntity<StoreDTO> getStoreByEmployee() throws UserException {
         return ResponseEntity.ok(storeService.getStoreByEmployee());
     }
 

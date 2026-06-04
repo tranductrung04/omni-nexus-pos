@@ -3,7 +3,7 @@ package com.shadow.controller;
 import com.shadow.exception.UserException;
 import com.shadow.mapper.UserMapper;
 import com.shadow.model.User;
-import com.shadow.payload.dto.UserDto;
+import com.shadow.payload.dto.UserDTO;
 import com.shadow.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("/profile")
-    public ResponseEntity<UserDto> getUserProfile(
+    public ResponseEntity<UserDTO> getUserProfile(
             @RequestHeader("Authorization") String jwt
     ) throws UserException {
         User user = userService.getUserFromJwtToken(jwt);
@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(
+    public ResponseEntity<UserDTO> getUserById(
             @PathVariable("id") Long id) throws UserException {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(userMapper.toDTO(user));

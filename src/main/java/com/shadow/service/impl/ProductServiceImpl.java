@@ -7,7 +7,7 @@ import com.shadow.mapper.ProductMapper;
 import com.shadow.model.Category;
 import com.shadow.model.Product;
 import com.shadow.model.Store;
-import com.shadow.payload.dto.ProductDto;
+import com.shadow.payload.dto.ProductDTO;
 import com.shadow.repository.ProductRepository;
 import com.shadow.service.CategoryService;
 import com.shadow.service.ProductService;
@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) throws CategoryException, UserException {
+    public ProductDTO createProduct(ProductDTO productDto) throws CategoryException, UserException {
         Store store = storeService.getStoreEntityById(productDto.getStoreId());
 
         Category category = categoryService.getCategoryEntityById(productDto.getCategoryId());
@@ -39,8 +39,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(
-            Long id, ProductDto productDto
+    public ProductDTO updateProduct(
+            Long id, ProductDTO productDto
     ) throws ProductException, CategoryException, UserException {
 
         Product product = productRepository.findById(id).orElseThrow(
@@ -73,13 +73,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProductByStoreId(Long storeId) {
+    public List<ProductDTO> getAllProductByStoreId(Long storeId) {
         List<Product> products = productRepository.findByStoreId(storeId);
         return products.stream().map(productMapper::toDTO).toList();
     }
 
     @Override
-    public List<ProductDto> searchByKeyword(Long storeId, String keyword) {
+    public List<ProductDTO> searchByKeyword(Long storeId, String keyword) {
         List<Product> products = productRepository.searchByKeyword(storeId, keyword);
         return products.stream().map(productMapper::toDTO).toList();
     }

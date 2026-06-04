@@ -1,7 +1,9 @@
 package com.shadow.model;
 
 import com.shadow.domain.UserRole;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
@@ -12,12 +14,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class User extends BaseEntity {
     @Column(nullable = false)
     private String fullName;
 
@@ -34,8 +32,5 @@ public class User {
     private UserRole role;
 
     private String password;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
 }
