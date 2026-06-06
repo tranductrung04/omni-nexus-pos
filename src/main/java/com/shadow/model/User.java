@@ -33,4 +33,7 @@ public class User extends BaseEntity {
 
     @ManyToOne
     private Store store;
+
+    @ManyToOne
+    private Branch branch;
 }
