@@ -48,6 +48,6 @@ public class BranchController {
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<BranchDTO>> getAllBranchesByStoreId(
             @PathVariable Long storeId) {
-        return ResponseEntity.ok(branchService.getBranchByStoreId(storeId));
+        return ResponseEntity.ok(branchService.getAllBranchesByStoreId(storeId));
     }
 }

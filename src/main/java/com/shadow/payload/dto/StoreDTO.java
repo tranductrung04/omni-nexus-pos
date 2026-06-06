@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 public class StoreDTO {
     private Long id;
     private String brand;
-    private Long storeAdminId;
     private String description;
     private String storeType;
     private StoreStatus status;
     private StoreContact contact;
+    private Long storeAdminId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

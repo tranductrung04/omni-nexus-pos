@@ -65,7 +65,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchDTO> getBranchByStoreId(Long storeId) {
+    public List<BranchDTO> getAllBranchesByStoreId(Long storeId) {
         List<Branch> branches = branchRepository.findByStoreId(storeId);
         return branches.stream().map(branchMapper::toDTO).toList();
     }
@@ -76,5 +76,12 @@ public class BranchServiceImpl implements BranchService {
                 () -> new ResourceNotFoundException("Branch", id)
         );
         return branchMapper.toDTO(existing);
+    }
+
+    @Override
+    public Branch getBranchEntityById(Long id) {
+        return branchRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Branch", id)
+        );
     }
 }

@@ -5,10 +5,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class CategoryDTO {
+public class InventoryDTO {
     private Long id;
-    private String name;
-    private Long storeId;
+    private Integer quantity;
+    private Long branchId;
+    private Long productId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

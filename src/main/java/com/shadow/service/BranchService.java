@@ -1,5 +1,6 @@
 package com.shadow.service;
 
+import com.shadow.model.Branch;
 import com.shadow.payload.dto.BranchDTO;
 
 import java.util.List;
@@ -11,7 +12,9 @@ public interface BranchService {
 
     void deleteBranch(Long id);
 
-    List<BranchDTO> getBranchByStoreId(Long storeId);
+    List<BranchDTO> getAllBranchesByStoreId(Long storeId);
 
     BranchDTO getBranchById(Long id);
+
+    Branch getBranchEntityById(Long id);
 }

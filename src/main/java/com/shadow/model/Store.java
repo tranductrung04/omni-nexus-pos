@@ -17,9 +17,6 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private String brand;
 
-    @OneToOne
-    private User storeAdmin;
-
     private String description;
     private String storeType;
 
@@ -27,6 +24,9 @@ public class Store extends BaseEntity {
 
     @Embedded
     private StoreContact contact = new StoreContact();
+
+    @OneToOne
+    private User storeAdmin;
 
     @Override
     protected void onCreate() {

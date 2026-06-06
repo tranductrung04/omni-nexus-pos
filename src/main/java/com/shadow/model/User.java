@@ -23,9 +23,6 @@ public class User extends BaseEntity {
     @Email(message = "Email should be valid")
     private String email;
 
-    @ManyToOne
-    private Store store;
-
     private String phone;
 
     @Column(nullable = false)
@@ -33,4 +30,7 @@ public class User extends BaseEntity {
 
     private String password;
     private LocalDateTime lastLogin;
+
+    @ManyToOne
+    private Store store;
 }

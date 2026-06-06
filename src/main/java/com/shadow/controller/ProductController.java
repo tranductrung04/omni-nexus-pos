@@ -22,9 +22,9 @@ public class ProductController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<ProductDTO>> getProductByStoreId(
+    public ResponseEntity<List<ProductDTO>> getAllProductsByStoreId(
             @PathVariable Long storeId) {
-        return ResponseEntity.ok(productService.getAllProductByStoreId(storeId));
+        return ResponseEntity.ok(productService.getAllProductsByStoreId(storeId));
     }
 
     @PutMapping("/{id}")

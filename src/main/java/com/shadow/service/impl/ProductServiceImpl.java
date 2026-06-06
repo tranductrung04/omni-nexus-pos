@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductByStoreId(Long storeId) {
+    public List<ProductDTO> getAllProductsByStoreId(Long storeId) {
         List<Product> products = productRepository.findByStoreId(storeId);
         return products.stream().map(productMapper::toDTO).toList();
     }
@@ -78,5 +78,12 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> searchByKeyword(Long storeId, String keyword) {
         List<Product> products = productRepository.searchByKeyword(storeId, keyword);
         return products.stream().map(productMapper::toDTO).toList();
+    }
+
+    @Override
+    public Product getProductEntityById(Long id) {
+        return productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", id)
+        );
     }
 }
