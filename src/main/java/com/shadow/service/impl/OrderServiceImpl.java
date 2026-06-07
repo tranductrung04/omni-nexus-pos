@@ -97,6 +97,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order getOrderEntityById(Long id) {
+        return orderRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Order", id)
+        );
+    }
+
+    @Override
     public List<OrderDTO> getAllOrdersByBranch(
             Long branchId,
             Long customerId,
