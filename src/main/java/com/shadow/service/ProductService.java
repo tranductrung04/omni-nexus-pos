@@ -17,4 +17,6 @@ public interface ProductService {
     List<ProductDTO> searchByKeyword(Long storeId, String keyword);
 
     Product getProductEntityById(Long id);
+
+    List<Product> getProductsByIds(List<Long> ids);
 }

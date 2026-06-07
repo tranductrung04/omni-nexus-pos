@@ -86,4 +86,9 @@ public class ProductServiceImpl implements ProductService {
                 () -> new ResourceNotFoundException("Product", id)
         );
     }
+
+    @Override
+    public List<Product> getProductsByIds(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
 }
