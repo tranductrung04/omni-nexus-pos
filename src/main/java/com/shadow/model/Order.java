@@ -19,7 +19,6 @@ import java.util.List;
 public class Order extends BaseEntity {
     private String name;
     private Double totalAmount;
-
     private PaymentType paymentType;
     private OrderStatus status;
 

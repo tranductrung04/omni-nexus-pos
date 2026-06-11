@@ -54,6 +54,11 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toMap(Product::getId, p -> p));
 
         Order order = orderMapper.toEntity(orderDTO);
+        order.setPaymentType(
+                orderDTO.getPaymentType() != null
+                        ? orderDTO.getPaymentType()
+                        : PaymentType.CASH
+        );
         order.setBranch(branch);
         order.setCashier(cashier);
         order.setCustomer(customer);
